@@ -1,11 +1,7 @@
-/*
- * WooCommerce API
- * DO NOT TOUCH!
- */
 'use strict';
 
 import OAuth from 'oauth-1.0a';
-// import {warn} from '@app/Omni'
+
 
 export default WooCommerceAPI;
 
