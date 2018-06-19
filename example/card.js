@@ -4,39 +4,81 @@ import {
     Text,
     Image,
     StyleSheet,
-    Button
+    Button,
+    TextInput
 } from 'react-native'
 import css from './styles/product'
 export default class Card extends Component{
     constructor(props){
         super(props)
+        this.state={
+            price:parseInt(this.props.product.price),
+            quantity:parseInt(this.props.product.quantity),
+        }
     }
     render(){
-        return(
-            <View style={styles.container}>
-
-                <View style={styles.imgContainer}>
-                    <Image style={styles.img} source={{uri:this.props.product.images[0].src}}/>
-                </View>
-                <View style={styles.desc}>
-                    <View style={styles.nameContainer}>
-                        <Text style={styles.name}>{this.props.product.name}</Text>
+        if(this.props.type === 'cart'){
+            return(
+                <View style={styles.container}>
+                    <View style={styles.imgContainer}>
+                        <Image style={styles.img} source={{uri:this.props.product.images[0].src}}/>
                     </View>
-
-                    <View style={styles.priceContainer}>
-                        <Text style={styles.price}>{"Price : "+"$"+this.props.product.price}</Text>
+                    <View style={styles.desc}>
+                        <View style={styles.nameContainer}>
+                            <Text style={styles.name}>{this.props.product.name}</Text>
+                        </View>
+                        <View style={styles.priceContainer}>
+                            <Text style={styles.price}>{"Price: "+"$"+this.props.product.price}</Text>
+                        </View>
+                        <View style={styles.priceContainer}>
+                            <Text style={styles.price}>{"Qty : "+this.props.product.quantity}</Text>
+                        </View>
+                        <View style={styles.priceContainer}>
+                            <Text style={styles.price}>{"Total: "+"$"+this.props.product.price*this.state.quantity}</Text>
+                        </View>
                     </View>
+                    <View style={styles.btnContainer}>
+                        <View style={styles.priceContainer}>
+                            <Button 
+                            title="update"
+                            onPress={this.props.method}
+                            />
+                        </View>
+                        <View style={styles.priceContainer}>
+                            <Button 
+                            title="Remove"
+                            color="red"
+                            onPress={this.props.remove}
+                            />
+                        </View>
+                    </View>
+    
                 </View>
-
-                <View style={styles.btnContainer}>
-                    <Button 
-                    title="Details"
-                    onPress={this.props.method}
-                    />
+            )
+        }else{
+            return(
+                <View style={styles.container}>
+                    <View style={styles.imgContainer}>
+                        <Image style={styles.img} source={{uri:this.props.product.images[0].src}}/>
+                    </View>
+                    <View style={styles.desc}>
+                        <View style={styles.nameContainer}>
+                            <Text style={styles.name}>{this.props.product.name}</Text>
+                        </View>
+                        <View style={styles.priceContainer}>
+                            <Text style={styles.price}>{"Price : "+"$"+this.props.product.price}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.btnContainer}>
+                        <Button 
+                        title="Details"
+                        onPress={this.props.method}
+                        />
+                    </View>
+    
                 </View>
-
-            </View>
-        )
+            )
+        }
     }
 }
 

@@ -3,15 +3,14 @@ import {
 	ScrollView,
 	View,
 	Text,
-	AsyncStorage
+	AsyncStorage,
+	Button
 } from "react-native";
 import Api from "./WooCommerce/Api";
 import Card from './card'
 
 export default class Product extends Component {
-	static navigationOptions = {
-        title:'Shop',
-      };
+
 	constructor(props) {
 		super(props);
 		this.data = [];
@@ -25,6 +24,15 @@ export default class Product extends Component {
 			cart:[]
 		}
 	}
+
+	static navigationOptions = {
+		title:'Shop',
+	  };
+	  
+	  nav=()=>{
+		  console.log(this.props.navigation)
+		  this.props.navigation.navigate('Cart')
+	  }
 
 	componentDidMount(){
 		this.fetchData()
@@ -76,9 +84,13 @@ export default class Product extends Component {
 		console.log(this.state.cart)
 	}
 
+	nav = () => {
+		this.props.navigation.navigate('Cart')
+	}
+
     mapFunction(items){
-		return items.map(item => (
-			<Card key={this.state.item.id} method={()=>{this.handler(item)}} product={item} /> 
+		return items.map(item=> (
+			<Card key={item.id} method={()=>{this.handler(item)}}  product={item} /> 
 		));
 	}
 
@@ -97,7 +109,11 @@ export default class Product extends Component {
 		else{
 		return (
 			<ScrollView>
-				{this.mapFunction(this.state.data)}		
+				{this.mapFunction(this.state.data)}
+				<Button
+					style={{alignSelf:'stretch'}}
+					title="View Cart"
+					onPress={this.nav} />		
 			</ScrollView>
 		);
 		}

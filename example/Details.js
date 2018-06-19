@@ -4,26 +4,31 @@ import {
     Image,
     ScrollView,
     Text,
-    StyleSheet,
     Button,
     TextInput,
     AsyncStorage
 } from 'react-native'
+import styles from './styles'
 export default class Details extends Component{
     static navigationOptions = {
         title:'Product Details',
       };
+
     constructor(props){
         super(props)
         this.state={
             data:this.props.navigation.getParam('data','def'),
+            loading:false,
         }
     }
+
     componentDidMount(){
         console.log(this.state.data)
     }
+
     render(){
-        return(
+        if(!this.state.loading){
+            return(
             <ScrollView>
                 <View style={styles.container}>
                     <View style={styles.imgContainer}>
@@ -48,15 +53,18 @@ export default class Details extends Component{
                                 underlineColorAndroid='transparent'
                                 style={styles.qtyInput}
                                 keyboardType='numeric'
-                                placeholder='1'
-                                onChangeText={(text) => this.setState(prev=>{
-                                    return{
-                                         ...prev,
-                                            data:{
-                                             ...prev.data,
-                                             quantity:text
+                                placeholder='Write Number of units'
+                                onChangeText={
+                                    (text) => {this.setState(prev=>{
+                                        return{
+                                        ...prev,
+                                        txt:text,
+                                        data:{
+                                            ...prev.data,
+                                            quantity:parseInt(text)
                                          }
-                                }})}  
+                                }})
+                                }}  
                                 />
                         </View>
                     </View>
@@ -66,87 +74,87 @@ export default class Details extends Component{
                             {this.state.data.description}
                     </Text>
                 </View>
-
                 <Button 
                     onPress={this.update}
                     style={styles.btn}
                     title="Add To Cart"  />
-
             </ScrollView>
-        )
+        )}else{
+            return(
+                <View>
+                <Text>Adding product to cart</Text>
+                </View>
+            )
+        }
     }
-
     update = () =>{
-            console.log(" ITEM SAVED IN STORAGE \n"+this.state.data)
+
+            if(this.state.txt===undefined){
+                alert('Quantity is required')
+                return
+            }
+            let isnum = /^[0-9]+$/.test(this.state.txt);
+            if(!isnum){
+                alert('Quantity should be a positive number')
+                return
+            }
+            if(parseInt(this.state.txt)===0){
+                alert('Quantity should be greater thn 0')
+                return
+            }
+
+            this.setState(
+                prev=>{
+                    return{
+                        ...prev,
+                        loading:true
+                    }
+                }
+            )
             AsyncStorage.getItem('cart')
             .then(
-                data=>{
-                    let arr = JSON.parse(data)
-                    arr.push(this.state.data)
-                    AsyncStorage.setItem('cart',JSON.stringify(arr))
+                data=>{    
+                    if(data===null){
+                        let arr = [this.state.data]
+                        AsyncStorage.setItem('cart',JSON.stringify(arr))
+                        this.setState(
+                            prev=>{
+                                return{
+                                    ...prev,
+                                    loading:false
+                                }
+                            }
+                        )
+                    this.props.navigation.navigate('Product')
+                    }else{
+                        let arr=JSON.parse(data) 
+                           let i = arr.findIndex( item  =>  item.id === this.state.data.id )
+                           console.log(i)
+                           console.log(arr[i])
+                            if(i>-1){
+                             arr[i] = this.state.data
+                            }else{
+                             arr.push(this.state.data)
+                            }
+                        console.log(this.state.data)  
+                        console.log(this.state.data.id)
+                        AsyncStorage.setItem('cart',JSON.stringify(arr))
+                        this.setState(
+                            prev=>{
+                                return{
+                                    ...prev,
+                                    loading:false
+                                }
+                            }
+                        )
+                    this.props.navigation.navigate('Product')
+                    }  
+                }
+            ).catch(
+                e=>{
+                    console.log(e)
                 }
             )
         }
 
     }
-
-const styles = StyleSheet.create({
-    container:{
-        flex:1
-    },
-    imgContainer:{
-        padding:10
-    },
-    img:{
-        width:'100%',
-        height:400
-    },
-    header:{
-        backgroundColor:'#eee',
-        alignSelf:'stretch'
-    },
-    nameContainer:{
-        paddingTop:15,
-        paddingLeft:15
-    },
-    name:{
-        fontSize:20,
-        color:'black'
-    },
-    priceContainer:{
-        paddingLeft:15,
-        
-    },
-    price:{
-        fontSize:12
-    },
-    descriptionContainer:{
-        padding:15
-    },
-    description:{
-        fontSize:15,
-        lineHeight:20
-    },
-    btn:{
-        alignSelf: 'stretch',
-    },
-    qtyContainer:{
-        flex:1,
-        flexDirection:'row'
-    },
-    labelContainer:{
-        flex:1,
-   
-
-    },
-    qtyInputContainer:{
-        flex:1
-    },
-    qtyInput:{
-        color:'black',
-        backgroundColor:'white'
-    },
-    label:{
-        fontSize:15
-    }
-})

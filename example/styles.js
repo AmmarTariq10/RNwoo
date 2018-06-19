@@ -1,0 +1,60 @@
+
+import { StyleSheet } from 'react-native'
+export default styles = StyleSheet.create({
+    container:{
+        flex:1
+    },
+    imgContainer:{
+        padding:10
+    },
+    img:{
+        width:'100%',
+        height:400
+    },
+    header:{
+        backgroundColor:'#eee',
+        alignSelf:'stretch'
+    },
+    nameContainer:{
+        paddingTop:15,
+        paddingLeft:15
+    },
+    name:{
+        fontSize:20,
+        color:'black'
+    },
+    priceContainer:{
+        paddingLeft:15,
+        
+    },
+    price:{
+        fontSize:12
+    },
+    descriptionContainer:{
+        padding:15
+    },
+    description:{
+        fontSize:15,
+        lineHeight:20
+    },
+    btn:{
+        alignSelf: 'stretch',
+    },
+    qtyContainer:{
+        flex:1,
+        flexDirection:'row'
+    },
+    labelContainer:{
+        flex:1,
+    },
+    qtyInputContainer:{
+        flex:1
+    },
+    qtyInput:{
+        color:'black',
+        backgroundColor:'white'
+    },
+    label:{
+        fontSize:15
+    }
+})
